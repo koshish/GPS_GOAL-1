@@ -18,7 +18,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 #     rospy.loginfo("Stop")
 #     rospy.sleep(1)
 
-def do_gps_goal(lat, long, marker_only=False):
+def do_gps_goal(lat, longitude, marker_only=False):
     rospy.init_node('gps_goal')
 
     # Check for degrees, minutes, seconds format and convert to decimal
@@ -29,16 +29,16 @@ def do_gps_goal(lat, long, marker_only=False):
           minutes = -minutes
           seconds = -seconds
         lat = degrees + minutes/60 + seconds/3600
-    if ',' in long:
-        degrees, minutes, seconds = long.split(',')
+    if ',' in longitude:
+        degrees, minutes, seconds = longitude.split(',')
         degrees, minutes, seconds = float(degrees), float(minutes), float(seconds)
         if long[0] == '-': # check for negative sign
           minutes = -minutes
           seconds = -seconds
-        long = degrees + minutes/60 + seconds/3600
+        longitude = degrees + minutes/60 + seconds/3600
 
     goal_lat = float(lat)
-    goal_long = float(long)
+    goal_long = float(longitude)
     rospy.loginfo('Given GPS goal: lat %s, long %s.' % (goal_lat, goal_long))
 
     # Get the lat long coordinates of our map frame's origin which must be publshed on topic /local_xy_origin. We use this to calculate our goal within the map frame.
@@ -120,10 +120,10 @@ def do_gps_goal(lat, long, marker_only=False):
 
 @click.command()
 @click.option('--lat', prompt='Latitude', help='Latitude')
-@click.option('--long', prompt='Longitude', help='Longitude')
+@click.option('--longitude', prompt='Longitude', help='Longitude')
 @click.option('--marker-only', help='Only publish a marker at the gps location, do not execute goal', is_flag=True)
 # @click.option('--yaw', '-y', help='Set target direction robot should be facing after reaching the goal (ie. target yaw)')
-def main_gps_goal(lat, long, marker_only):
+def main_gps_goal(lat, longitude, marker_only):
     """Send goal to move_base given latitude and longitude
 
     \b
@@ -132,7 +132,7 @@ def main_gps_goal(lat, long, marker_only):
     gps_goal.py --lat 43,39,31 --long -79,22,45 # DMS format"""
 
     # Get click arguments then call do gps goal
-    do_gps_goal(lat, long, marker_only)
+    do_gps_goal(lat, longitude, marker_only)
 
 if __name__ == '__main__':
     main_gps_goal()
